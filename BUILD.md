@@ -15,17 +15,17 @@ xattr -cr apps/desktop/release/mac/Hermes.app || true
 codesign --force --deep --sign - apps/desktop/release/mac/Hermes.app
 COPYFILE_DISABLE=1 ditto -c -k --keepParent \
   apps/desktop/release/mac/Hermes.app \
-  apps/desktop/release/Hermes-0.17.0-mac-x64-unofficial-586aae4.zip
+  apps/desktop/release/Hermes-0.17.0-mac-x64-official-source-build-586aae4.zip
 ```
 
 Verification commands:
 
 ```sh
-unzip -q Hermes-0.17.0-mac-x64-unofficial-586aae4.zip -d audit
+unzip -q Hermes-0.17.0-mac-x64-official-source-build-586aae4.zip -d audit
 file audit/Hermes.app/Contents/MacOS/Hermes
 codesign --verify --deep --strict --verbose=2 audit/Hermes.app
 codesign -dv --verbose=2 audit/Hermes.app
-shasum -a 256 Hermes-0.17.0-mac-x64-unofficial-586aae4.zip
+shasum -a 256 Hermes-0.17.0-mac-x64-official-source-build-586aae4.zip
 ```
 
 Expected architecture:
