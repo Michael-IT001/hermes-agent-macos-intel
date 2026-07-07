@@ -1,0 +1,6 @@
+.codex/
+dist/
+*.zip
+*.dmg
+*.blockmap
+*.log
