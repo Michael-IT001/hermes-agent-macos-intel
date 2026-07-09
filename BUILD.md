@@ -15,22 +15,24 @@ xattr -cr apps/desktop/release/mac/Hermes.app || true
 
 # Repair the macOS app icon before signing:
 # - convert the upstream PNG-backed icon into a real .icns file
-# - crop the runtime Dock PNG transparent border to avoid the black-ring Dock artifact
+# - normalize the bundle ICNS, app.asar PNG assets, and app.asar.unpacked runtime PNG
+#   to the official macOS installer icon footprint: bbox (37,36)-(977,957) on 1024x1024
+# - this avoids both the black-ring Dock artifact and the inactive/running Dock size jump
 codesign --force --deep --sign - apps/desktop/release/mac/Hermes.app
 COPYFILE_DISABLE=1 ditto -c -k --keepParent \
   apps/desktop/release/mac/Hermes.app \
-  apps/desktop/release/Hermes-0.17.0-mac-x64-official-source-build-4d611ba-iconfix.zip
+  apps/desktop/release/Hermes-0.17.0-mac-x64-official-source-build-4d611ba-icon-unified.zip
 ```
 
 Verification commands:
 
 ```sh
-unzip -q Hermes-0.17.0-mac-x64-official-source-build-4d611ba-iconfix.zip -d audit
+unzip -q Hermes-0.17.0-mac-x64-official-source-build-4d611ba-icon-unified.zip -d audit
 file audit/Hermes.app/Contents/MacOS/Hermes
 file audit/Hermes.app/Contents/Resources/icon.icns
 codesign --verify --deep --strict --verbose=2 audit/Hermes.app
 codesign -dv --verbose=2 audit/Hermes.app
-shasum -a 256 Hermes-0.17.0-mac-x64-official-source-build-4d611ba-iconfix.zip
+shasum -a 256 Hermes-0.17.0-mac-x64-official-source-build-4d611ba-icon-unified.zip
 ```
 
 Expected architecture:
@@ -50,4 +52,12 @@ Expected icon format:
 
 ```text
 Mac OS X icon
+```
+
+Expected icon footprint for `Contents/Resources/icon.icns`,
+`Contents/Resources/app.asar` `public/apple-touch-icon.png`, and
+`Contents/Resources/app.asar.unpacked/dist/apple-touch-icon.png`:
+
+```text
+bbox=(37,36,977,957), occupancy=0.918x0.899
 ```
